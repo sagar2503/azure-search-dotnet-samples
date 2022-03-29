@@ -1,4 +1,6 @@
-﻿namespace AzureSearch.BulkInsert
+﻿using System;
+
+namespace AzureSearch.BulkInsert
 {
     public class BookModel
     {
