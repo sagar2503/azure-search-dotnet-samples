@@ -3,8 +3,8 @@
   "Values": {
     "AzureWebJobsStorage": "",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "SearchApiKey": "YOUR_SEARCH_QUERY_KEY",
-    "SearchServiceName": "YOUR_SEARCH_RESOURCE_NAME",
+    "SearchApiKey": "1A49D76B44D5C6879D817F813D3CEA52",
+    "SearchServiceName": "https://azurecogsearch2503.search.windows.net",
     "SearchIndexName": "good-books"
   }
 }
