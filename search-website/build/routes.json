@@ -30,19 +30,20 @@
         "statusCode": 301
       },
       { 
-        "route": "/search" 
+        "route": "https://azureserachsample.azurewebsites.net/search" 
       },
       { 
-        "route": "/api/search" 
+        "route": "https://azureserachsample.azurewebsites.net/api/search" 
       },
       { 
-        "route": "/api/lookup" 
+        "route": "https://azureserachsample.azurewebsites.net/api/lookup" 
       },
       { 
-        "route": "/api/suggest" 
+        "route": "https://azureserachsample.azurewebsites.net/api/suggest" 
       },
       { 
-        "route": "/details/*" 
+        "route": "https://azureserachsample.azurewebsites.net/details/*"
+        
       },
       {
         "route": "/*",
