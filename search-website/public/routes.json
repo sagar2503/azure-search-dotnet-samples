@@ -42,7 +42,8 @@
         "route": "https://azureserachsample.azurewebsites.net/api/suggest" 
       },
       { 
-        "route": "https://azureserachsample.azurewebsites.net/details/*" 
+        "route": "https://azureserachsample.azurewebsites.net/details/*"
+        
       },
       {
         "route": "/*",
