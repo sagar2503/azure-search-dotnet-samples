@@ -29,6 +29,7 @@
         "serve": "/",
         "statusCode": 301
       },
+      
       { 
         "route": "https://azureserachsample.azurewebsites.net/search" 
       },
