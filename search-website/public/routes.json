@@ -29,7 +29,7 @@
         "serve": "/",
         "statusCode": 301
       },
-      
+
       { 
         "route": "https://azureserachsample.azurewebsites.net/search" 
       },
@@ -51,6 +51,7 @@
         "serve": "/",
         "statusCode": 200
       }
+      
     ],
     "platformErrorOverrides": [
       {
