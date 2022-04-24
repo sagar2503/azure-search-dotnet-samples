@@ -1,4 +1,5 @@
 ﻿using Azure.Search.Documents.Models;
+using OrderResults.Models.MemberHandBook;
 using System.Collections.Generic;
 
 namespace OrderResults.Models
@@ -43,8 +44,10 @@ namespace OrderResults.Models
         public string paging { get; set; }
 
         // The list of results.
-        public SearchResults<Hotel> resultList;
-
+        //public SearchResults<Hotel> resultList;
+        //Sagar : Use typeof("classname") in T
+        public SearchResults<MemberHandbook> resultList;
+        
         public string scoring { get; set; }       
     }
 }

@@ -14,8 +14,10 @@
                 <td></td>
                 <td>
                     <h1 class="sampleTitle">
-                        <img src="~/images/azure-logo.png" width="80" />
-                        Hotels Search - Order Results
+                        <img src="~/images/AnthemLogo.png" width="80" />
+                        @*Sagar - Take it from Config*@
+                        @*Hotels Search - Order Results*@
+                        Anthem AI Hub - Member Handbook Search
                     </h1>
                 </td>
             </tr>
@@ -27,13 +29,13 @@
                         @Html.TextBoxFor(m => m.searchText, new { @class = "searchBox" }) <input class="searchBoxSubmit" type="submit" value="">
                     </div>
 
-                    <div class="searchBoxForm">
+                    @*<div class="searchBoxForm">
                         <b>&nbsp;Order:&nbsp;</b>
                         @Html.RadioButtonFor(m => m.scoring, "Default") Default&nbsp;&nbsp;
                         @Html.RadioButtonFor(m => m.scoring, "RatingRenovation") By numerical Rating&nbsp;&nbsp;
                         @Html.RadioButtonFor(m => m.scoring, "boostAmenities") By Amenities&nbsp;&nbsp;
                         @Html.RadioButtonFor(m => m.scoring, "renovatedAndHighlyRated") By Renovated date/Rating profile&nbsp;&nbsp;
-                    </div>
+                    </div>*@
                 </td>
             </tr>
 
@@ -43,7 +45,8 @@
 
                         @if (Model != null && Model.facetText != null)
                         {
-                            <h5 class="facetheader">Amenities:</h5>
+                            //Sagar - fetch from config
+                            <h5 class="facetheader">Tags:</h5>
                             <ul class="facetlist">
                                 @for (var c = 0; c < Model.facetText.Length; c++)
                                 {
@@ -64,28 +67,42 @@
 
                         var result = Model.resultList.GetResults().ToList();
 
-                        <div id="myDiv" style="width: 800px; height: 450px; overflow-y: scroll;" onscroll="scrolled()">
+                <div id="myDiv" style="width: 800px; height: 450px; overflow-y: scroll;" onscroll="scrolled()">
 
-                            <!-- Show the hotel data. -->
-                            @for (var i = 0; i < result.Count; i++)
-                            {
-                                var rateText = $"Rates from ${result[i].Document.cheapest} to ${result[i].Document.expensive}";
-                                var lastRenovatedText = $"Last renovated: { result[i].Document.LastRenovationDate.Value.Year}";
-                                var ratingText = $"Rating: {result[i].Document.Rating}";
+                    <!-- Show the hotel data. -->
+                    @for (var i = 0; i < result.Count; i++)
+                    {@*var rateText = $"Rates from ${result[i].Document.cheapest} to ${result[i].Document.expensive}";
+            var lastRenovatedText = $"Last renovated: { result[i].Document.LastRenovationDate.Value.Year}";
+            var ratingText = $"Rating: {result[i].Document.Rating}";
 
-                                string amenities = string.Join(", ", result[i].Document.Tags);
-                                string fullDescription = result[i].Document.Description;
-                                fullDescription += $"\nAmenities: {amenities}";
+            string amenities = string.Join(", ", result[i].Document.Tags);
+            string fullDescription = result[i].Document.Description;
+            fullDescription += $"\nAmenities: {amenities}";
 
-                                // Display the hotel details.
-                                @Html.TextArea($"name{i}", result[i].Document.HotelName, new { @class = "box1A" })
-                                @Html.TextArea($"rating{i}", ratingText, new { @class = "box1B" })
-                                @Html.TextArea($"rates{i}", rateText, new { @class = "box2A" })
-                                @Html.TextArea($"renovation{i}", lastRenovatedText, new { @class = "box2B" })
-                                @Html.TextArea($"desc{i}", fullDescription, new { @class = "box3" })
-                            }
+            // Display the hotel details.
+            @Html.TextArea($"name{i}", result[i].Document.HotelName, new { @class = "box1A" })
+            @Html.TextArea($"rating{i}", ratingText, new { @class = "box1B" })
+            @Html.TextArea($"rates{i}", rateText, new { @class = "box2A" })
+            @Html.TextArea($"renovation{i}", lastRenovatedText, new { @class = "box2B" })
+            @Html.TextArea($"desc{i}", fullDescription, new { @class = "box3" })*@
+                        //var FileName = $"FileName ${result[i].Document.FileName} to ${result[i].Document.expensive}";
+                                            //var lastRenovatedText = $"Last renovated: { result[i].Document.LastRenovationDate.Value.Year}";
+                                            //var ratingText = $"Rating: {result[i].Document.Rating}";
+                                            //string amenities = string.Join(", ", result[i].Document.Tags);
+                                            //string fullDescription = result[i].Document.Description;
+                                            //fullDescription += $"\nAmenities: {amenities}";
+                                            //// Display the hotel details.
 
-                        </div>
+
+                    @Html.Label($"FileName{i}", result[i].Document.FileName, new { @class = "box1A" })
+                    @Html.Label($"PageNumber{i}", result[i].Document.PageNumber[i], new { @class = "box1B" })
+                    @Html.Label($"rates{i}", result[i].Document.PageImageUrl[i], new { @class = "box2A" })
+                    @*@Html.TextArea($"SearchHighlights", result[i].Document.SearchHighlights, new { @class = "box2B" })*@
+                    @Html.Label($"desc{i}", result[i].Document.Text, new { @class = "box3" })
+                        
+                    }
+
+                </div>
 
                         <script>
                             function scrolled() {
@@ -96,10 +113,10 @@
                                         // Append the returned data to the current list of hotels.
                                         for (var i = 0; i < data.length; i += 5) {
                                             div.innerHTML += '\n<textarea class="box1A">' + data[i] + '</textarea>';
-                                            div.innerHTML += '<textarea class="box1B">' + data[i + 1] + '</textarea>';
-                                            div.innerHTML += '\n<textarea class="box2A">' + data[i + 2] + '</textarea>';
-                                            div.innerHTML += '<textarea class="box2B">' + data[i + 3] + '</textarea>';
-                                            div.innerHTML += '\n<textarea class="box3">' + data[i + 4] + '</textarea>';
+                                            div.innerHTML += '\n<textarea class="box1B">' +  data[i + 1] + '</textarea>';
+                                            div.innerHTML += '\n<image class="box2A">' + data[i + 2] + '</image>';
+                                            div.innerHTML += '\n<textarea class="box2B">' + data[i + 3] + '</textarea>';
+                                            //div.innerHTML += '\n<textarea class="box3">' + data[i + 4] + '</textarea>';
                                         }
                                     });
                                 }

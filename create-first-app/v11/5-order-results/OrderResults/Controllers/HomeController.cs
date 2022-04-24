@@ -10,6 +10,7 @@ using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents;
 using Azure;
 using Azure.Search.Documents.Models;
+using OrderResults.Models.MemberHandBook;
 
 namespace OrderResults.Controllers
 {
@@ -190,7 +191,11 @@ namespace OrderResults.Controllers
                 }
 
                 // For efficiency, the search call should be asynchronous, so use SearchAsync rather than Search.
-                model.resultList = await _searchClient.SearchAsync<Hotel>(model.searchText, options);
+                //model.resultList = await _searchClient.SearchAsync<Hotel>(model.searchText, options);
+
+                //Sagar
+                model.resultList = await _searchClient.SearchAsync<MemberHandbook>(model.searchText, options);
+
 
                 // Ensure TempData is stored for the next call.
                 TempData["page"] = page;
@@ -199,29 +204,31 @@ namespace OrderResults.Controllers
                 SaveFacets(model, true);
 
                 // Calculate the room rate ranges.
-                await foreach (var result in model.resultList.GetResultsAsync())
-                {
-                    var cheapest = 0d;
-                    var expensive = 0d;
 
-                    foreach (var room in result.Document.Rooms)
-                    {
-                        var rate = room.BaseRate;
-                        if (rate < cheapest || cheapest == 0)
-                        {
-                            cheapest = (double)rate;
-                        }
-                        if (rate > expensive)
-                        {
-                            expensive = (double)rate;
-                        }
-                    }
+                //await foreach (var result in model.resultList.GetResultsAsync())
+                //{
+                //    var cheapest = 0d;
+                //    var expensive = 0d;
 
-                    result.Document.cheapest = cheapest;
-                    result.Document.expensive = expensive;
-                }
+                //    foreach (var room in result.Document.Rooms)
+                //    {
+                //        var rate = room.BaseRate;
+                //        if (rate < cheapest || cheapest == 0)
+                //        {
+                //            cheapest = (double)rate;
+                //        }
+                //        if (rate > expensive)
+                //        {
+                //            expensive = (double)rate;
+                //        }
+                //    }
+
+                //    result.Document.cheapest = cheapest;
+                //    result.Document.expensive = expensive;
+                //
+                //}
             }
-            catch
+            catch(Exception ex)
             {
                 return View("Error", new ErrorViewModel { RequestId = "1" });
             }
@@ -243,20 +250,20 @@ namespace OrderResults.Controllers
             // Add a hotel details to the list.
             await foreach (var result in model.resultList.GetResultsAsync())
             {
-                var ratingText = $"Rating: {result.Document.Rating}";
-                var rateText = $"Rates from ${result.Document.cheapest} to ${result.Document.expensive}";
-                var lastRenovatedText = $"Last renovated: {result.Document.LastRenovationDate.Value.Year}";
-
-                string amenities = string.Join(", ", result.Document.Tags);
-                string fullDescription = result.Document.Description;
-                fullDescription += $"\nAmenities: {amenities}";
-
+                var PageNumber = $"{ Convert.ToInt32(result.Document.PageNumber) + 1}";
+                var highlitedText = $"{result.Document.Text}";
+                //var lastRenovatedText = $"Last renovated: {result.Document.LastRenovationDate.Value.Year}";
+                var pageImageUrl = $"{result.Document.PageImageUrl}";
+                //string amenities = string.Join(", ", result.Document.Tags);
+                //string fullDescription = result.Document.Description;
+                //fullDescription += $"\nAmenities: {amenities}";
+                
                 // Add strings to the list.
-                nextHotels.Add(result.Document.HotelName);
-                nextHotels.Add(ratingText);
-                nextHotels.Add(rateText);
-                nextHotels.Add(lastRenovatedText);
-                nextHotels.Add(fullDescription);
+                nextHotels.Add(result.Document.FileName);
+                nextHotels.Add(PageNumber);
+                nextHotels.Add(pageImageUrl);
+                nextHotels.Add(highlitedText);
+                  //nextHotels.Add(fullDescription);
             }
 
             // Rather than return a view, return the list of data.
