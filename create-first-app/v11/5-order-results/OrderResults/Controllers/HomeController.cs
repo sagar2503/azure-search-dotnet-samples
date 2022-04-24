@@ -18,16 +18,18 @@ namespace OrderResults.Controllers
         public async Task<ActionResult> Index()
         {
             InitSearch();
+            string facetName = _configuration["FacetName"];
 
             // Set up the facets call in the search parameters.
             SearchOptions options = new SearchOptions();
             // Search for up to 20 amenities.
-            options.Facets.Add("Tags,count:20");
+            //options.Facets.Add("Tags,count:20");
+            options.Facets.Add(facetName+ ",count:20");
 
             SearchResults<Hotel> searchResult = await _searchClient.SearchAsync<Hotel>("*", options);
 
             // Convert the results to a list that can be displayed in the client.
-            List<string> facets = searchResult.Facets["Tags"].Select(x => x.Value.ToString()).ToList();
+            List<string> facets = searchResult.Facets[facetName].Select(x => x.Value.ToString()).ToList();
 
             // Initiate a model with a list of facets for the first view.
             SearchData model = new SearchData(facets);
@@ -126,12 +128,23 @@ namespace OrderResults.Controllers
                     IncludeTotalCount = true,
                 };
                 // Select the data properties to be returned.
-                options.Select.Add("HotelName");
-                options.Select.Add("Description");
-                options.Select.Add("Tags");
-                options.Select.Add("Rooms");
-                options.Select.Add("Rating");
-                options.Select.Add("LastRenovationDate");
+                //options.Select.Add("HotelName");
+                //options.Select.Add("Description");
+                //options.Select.Add("Tags");
+                //options.Select.Add("Rooms");
+                //options.Select.Add("Rating");
+                //options.Select.Add("LastRenovationDate");
+                options.Select.Add("fileName");
+                options.Select.Add("metadata");
+                options.Select.Add("metadataList");
+                options.Select.Add("pageNumber");
+                options.Select.Add("pageImageUrl");
+                options.Select.Add("text");
+                options.Select.Add("entities");
+                options.Select.Add("hocrPages");
+                options.Select.Add("demoBoost");
+                options.Select.Add("demoInitialPage");
+
 
                 List<string> parameters = new List<string>();
                 // Set the ordering based on the user's radio button selection.
@@ -270,10 +283,11 @@ namespace OrderResults.Controllers
             // Pull the values from the appsettings.json file.
             string searchServiceUri = _configuration["SearchServiceUri"];
             string queryApiKey = _configuration["SearchServiceQueryApiKey"];
+            string serachIndexName = _configuration["SearchServiceIndexName"];
 
             // Create a service and index client.
             _indexClient = new SearchIndexClient(new Uri(searchServiceUri), new AzureKeyCredential(queryApiKey));
-            _searchClient = _indexClient.GetSearchClient("hotels-sample-index");
+            _searchClient = _indexClient.GetSearchClient(serachIndexName);
         }
     }
 }
