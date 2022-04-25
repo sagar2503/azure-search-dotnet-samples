@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace OrderResults.Models.MemberHandBook
 {
@@ -11,7 +13,6 @@ namespace OrderResults.Models.MemberHandBook
     {
         [JsonPropertyName("@search.score")]
         public double SearchScore { get; set; }
-
 
         [JsonPropertyName("@search.highlights")]
         public SearchHighlights SearchHighlights { get; set; }
@@ -30,14 +31,17 @@ namespace OrderResults.Models.MemberHandBook
         public string Metadata { get; set; }
 
         [SearchableField()]
+        [JsonIgnore]
         [JsonPropertyName("metadataList")]
         public List<string> MetadataList { get; set; }
 
         [SearchableField()]
+        [JsonIgnore]
         [JsonPropertyName("pageNumber")]
         public List<string> PageNumber { get; set; }
 
         [SearchableField()]
+        [JsonIgnore]
         [JsonPropertyName("pageImageUrl")]
         public List<string> PageImageUrl { get; set; }
 
@@ -50,10 +54,29 @@ namespace OrderResults.Models.MemberHandBook
         public List<string> Entities { get; set; }
 
         [JsonPropertyName("hocrPages")]
-        public List<string> HocrPages { get; set; }
+        public List<string> HocrPagesString { get; set; }
+
+        public List<HocrPages> HocrPagesObject
+        {
+            get => DeserializeHocrPages();
+            //private set => _volume = value;
+        }
+
+        private List<HocrPages> DeserializeHocrPages()
+        {
+            List<HocrPages> hp = new List<HocrPages>();
+            foreach (string p in HocrPagesString)
+            {
+
+                HocrPages hpages =                 Newtonsoft.Json.JsonConvert.DeserializeObject<HocrPages>(p);
+                hp.Add(hpages);
+            }
+            return hp;
+        }
 
         [SearchableField(IsFacetable = true)]
         [JsonPropertyName("cryptonyms")]
+        [JsonIgnore]
         public List<Cryptonyms> Cryptonyms { get; set; }
 
 

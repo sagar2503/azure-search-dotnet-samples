@@ -33,7 +33,7 @@
                         <b>&nbsp;Order:&nbsp;</b>
                         @Html.RadioButtonFor(m => m.scoring, "Default") Default&nbsp;&nbsp;
                         @Html.RadioButtonFor(m => m.scoring, "RatingRenovation") By numerical Rating&nbsp;&nbsp;
-                        @Html.RadioButtonFor(m => m.scoring, "boostAmenities") By Amenities&nbsp;&nbsp;
+                        @Html.RadioButtonFor(m => m.scoring, "boostEntities") By Amenities&nbsp;&nbsp;
                         @Html.RadioButtonFor(m => m.scoring, "renovatedAndHighlyRated") By Renovated date/Rating profile&nbsp;&nbsp;
                     </div>*@
                 </td>
@@ -50,10 +50,14 @@
                             <ul class="facetlist">
                                 @for (var c = 0; c < Model.facetText.Length; c++)
                                 {
+                                    var facetLink = $"{@Model.facetText[c]} ";
                                     <li> @Html.CheckBoxFor(m => m.facetOn[c], new { @id = "check" + c.ToString() }) @Model.facetText[c] </li>
+                                    @*<li>
+                                        @Html.ActionLink(facetLink, "FacetAsync", "Home", new { entityFilter = $"Tags/any(t: t eq '{@Model.facetText[c]}')" }, null)
+                                    </li>*@
                                 }
 
-                            </ul>
+</ul>
                         }
                     </div>
                 </td>
@@ -71,34 +75,29 @@
 
                     <!-- Show the hotel data. -->
                     @for (var i = 0; i < result.Count; i++)
-                    {@*var rateText = $"Rates from ${result[i].Document.cheapest} to ${result[i].Document.expensive}";
-            var lastRenovatedText = $"Last renovated: { result[i].Document.LastRenovationDate.Value.Year}";
-            var ratingText = $"Rating: {result[i].Document.Rating}";
+                    {
+                        // result[i].Document.hoc
+                        <br />
+                        @Html.Label($"FileName{i}", result[i].Document.FileName, new { @class = "box1" })
+                        <br />
+                        //@Html.Label($"HighlitedText{i}", result[i].Document.SearchHighlights.ToString(), new { @class = "box1" })
+                        @result[i].Document.SearchHighlights.ToString();
+                        
+                        <br />
+                        //@Html.Label($"FileName{i}", result[i].Document.Text)
+                        foreach (OrderResults.Models.MemberHandBook.HocrPages p in result[i].Document.HocrPagesObject)
+                        {
+                            <br />
+                            @Html.Label($"PageNumber", p.PageNumber.ToString(), new { @class = "box2" })
+                            <br />
+                            @Html.Label($"Text", p.Text, new { @class = "box3" })
+                            <br />
+                            <img src=@p.PageImageUrl
+                                 class="rounded-circle"
+                                 height="200" width="200" />
+                            <br />
+                        }
 
-            string amenities = string.Join(", ", result[i].Document.Tags);
-            string fullDescription = result[i].Document.Description;
-            fullDescription += $"\nAmenities: {amenities}";
-
-            // Display the hotel details.
-            @Html.TextArea($"name{i}", result[i].Document.HotelName, new { @class = "box1A" })
-            @Html.TextArea($"rating{i}", ratingText, new { @class = "box1B" })
-            @Html.TextArea($"rates{i}", rateText, new { @class = "box2A" })
-            @Html.TextArea($"renovation{i}", lastRenovatedText, new { @class = "box2B" })
-            @Html.TextArea($"desc{i}", fullDescription, new { @class = "box3" })*@
-                        //var FileName = $"FileName ${result[i].Document.FileName} to ${result[i].Document.expensive}";
-                                            //var lastRenovatedText = $"Last renovated: { result[i].Document.LastRenovationDate.Value.Year}";
-                                            //var ratingText = $"Rating: {result[i].Document.Rating}";
-                                            //string amenities = string.Join(", ", result[i].Document.Tags);
-                                            //string fullDescription = result[i].Document.Description;
-                                            //fullDescription += $"\nAmenities: {amenities}";
-                                            //// Display the hotel details.
-
-
-                    @Html.Label($"FileName{i}", result[i].Document.FileName, new { @class = "box1A" })
-                    @Html.Label($"PageNumber{i}", result[i].Document.PageNumber[i], new { @class = "box1B" })
-                    @Html.Label($"rates{i}", result[i].Document.PageImageUrl[i], new { @class = "box2A" })
-                    @*@Html.TextArea($"SearchHighlights", result[i].Document.SearchHighlights, new { @class = "box2B" })*@
-                    @Html.Label($"desc{i}", result[i].Document.Text, new { @class = "box3" })
                         
                     }
 
