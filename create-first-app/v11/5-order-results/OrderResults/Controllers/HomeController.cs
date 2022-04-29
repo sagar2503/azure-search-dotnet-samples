@@ -16,21 +16,34 @@ namespace OrderResults.Controllers
 {
     public class HomeController : Controller
     {
+        private static SearchIndexClient _indexClient;
+        private static SearchClient _searchClient;
+        private static IConfigurationBuilder _builder;
+        private static IConfigurationRoot _configuration;
+
         public async Task<ActionResult> Index()
         {
             InitSearch();
-            string facetName = _configuration["FacetName"];
+
+            GlobalVariables.facetName = _configuration["FacetName"];
+            GlobalVariables.facetCountConfig = _configuration["FacetCount"];
+            GlobalVariables.selectFields = _configuration["SelectFields"];
+            GlobalVariables.searchFields = _configuration["SearchFields"];
+            GlobalVariables.highlightFields = _configuration["HighlightFields"];
+
+
+            int facetCount = Convert.ToInt32(GlobalVariables.facetCountConfig);
 
             // Set up the facets call in the search parameters.
             SearchOptions options = new SearchOptions();
             // Search for up to 20 amenities.
             //options.Facets.Add("Tags,count:20");
-            options.Facets.Add(facetName + ",count:20");
+            options.Facets.Add(GlobalVariables.facetName + ",count:" + facetCount.ToString());
 
             SearchResults<HocrDocument> searchResult = await _searchClient.SearchAsync<HocrDocument>("*", options);
 
             // Convert the results to a list that can be displayed in the client.
-            List<string> facets = searchResult.Facets[facetName].Select(x => x.Value.ToString()).ToList();
+            List<string> facets = searchResult.Facets[GlobalVariables.facetName].Select(x => x.Value.ToString()).ToList();
 
             // Initiate a model with a list of facets for the first view.
             SearchData model = new SearchData(facets);
@@ -135,26 +148,26 @@ namespace OrderResults.Controllers
                     //HighlightPostTag = "</mark>"
                 };
                 // Select the data properties to be returned.
-                //options.Select.Add("HotelName");
-                //options.Select.Add("Description");
-                //options.Select.Add("Tags");
-                //options.Select.Add("Rooms");
-                //options.Select.Add("Rating");
-                //options.Select.Add("LastRenovationDate");
-                options.Select.Add("fileName");
-                options.Select.Add("metadata");
-                options.Select.Add("text");
-                options.Select.Add("entities");
-                options.Select.Add("hocrPages");
-                //options.Select.Add("metadataList");
-                //options.Select.Add("pageNumber");
-                //options.Select.Add("pageImageUrl");
-                options.Select.Add("demoBoost");
-                options.Select.Add("demoInitialPage");
-                options.SearchFields.Add("hocrPages");
-                options.SearchFields.Add("text");
-                options.HighlightFields.Add("text");
+                List<string> selectFieldsList = GlobalVariables.selectFields.Split(',').ToList<string>();
+                List<string> searchFieldsList = GlobalVariables.searchFields.Split(',').ToList<string>();
+                List<string> highlightFieldsList = GlobalVariables.highlightFields.Split(',').ToList<string>();
 
+
+                foreach (string field in selectFieldsList)
+                {
+                    options.Select.Add(field);
+                }
+
+                foreach (string field in searchFieldsList)
+                {
+                    options.SearchFields.Add(field);
+                }
+
+                foreach (string field in highlightFieldsList)
+                {
+                    options.HighlightFields.Add(field);
+
+                }
 
                 List<string> parameters = new List<string>();
                 for (int a = 0; a < model.facetOn.Length; a++)
@@ -203,7 +216,6 @@ namespace OrderResults.Controllers
                 }
 
                 // For efficiency, the search call should be asynchronous, so use SearchAsync rather than Search.
-                //model.resultList = await _searchClient.SearchAsync<Hotel>(model.searchText, options);
 
                 //Sagar
                 model.resultList = await _searchClient.SearchAsync<HocrDocument>(model.searchText, options);
@@ -264,20 +276,15 @@ namespace OrderResults.Controllers
             {
                 var PageNumber = $"{ Convert.ToInt32(result.Document.PageNumber)}";
                 var highlitedText = $"{result.Document.SearchHighlights.Text}";
-                //highlitedText.Replace("<em>", "<mark>");
-                //highlitedText.Replace("</em>", "</mark>");
-                //var lastRenovatedText = $"Last renovated: {result.Document.LastRenovationDate.Value.Year}";
+
                 var pageImageUrl = $"{result.Document.PageImageUrl}";
-                //string amenities = string.Join(", ", result.Document.Tags);
-                //string fullDescription = result.Document.Description;
-                //fullDescription += $"\nAmenities: {amenities}";
 
                 // Add strings to the list.
                 nextHotels.Add(result.Document.FileName);
                 nextHotels.Add(PageNumber);
                 nextHotels.Add(pageImageUrl);
                 nextHotels.Add(highlitedText);
-                //nextHotels.Add(fullDescription);
+
             }
 
             // Rather than return a view, return the list of data.
@@ -290,10 +297,7 @@ namespace OrderResults.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        private static SearchIndexClient _indexClient;
-        private static SearchClient _searchClient;
-        private static IConfigurationBuilder _builder;
-        private static IConfigurationRoot _configuration;
+
 
         private void InitSearch()
         {

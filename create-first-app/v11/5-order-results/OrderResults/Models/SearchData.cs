@@ -28,6 +28,11 @@ namespace OrderResults.Models
                 return 2;
             }
         }
+        public static string facetName ;
+        public static string facetCountConfig ;
+        public static string selectFields ;
+        public static string searchFields ;
+        public static string highlightFields ;
     }
     public class SearchData
     {
