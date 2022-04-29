@@ -1,16 +1,16 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using OrderResults.Models;
-using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using System.Linq;
-using Azure.Search.Documents.Indexes;
+﻿using Azure;
 using Azure.Search.Documents;
-using Azure;
+using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using OrderResults.Models;
 using OrderResults.Models.MemberHandBook;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OrderResults.Controllers
 {
@@ -25,9 +25,9 @@ namespace OrderResults.Controllers
             SearchOptions options = new SearchOptions();
             // Search for up to 20 amenities.
             //options.Facets.Add("Tags,count:20");
-            options.Facets.Add(facetName+ ",count:20");
+            options.Facets.Add(facetName + ",count:20");
 
-            SearchResults<MemberHandbook> searchResult = await _searchClient.SearchAsync<MemberHandbook>("*", options);
+            SearchResults<HocrDocument> searchResult = await _searchClient.SearchAsync<HocrDocument>("*", options);
 
             // Convert the results to a list that can be displayed in the client.
             List<string> facets = searchResult.Facets[facetName].Select(x => x.Value.ToString()).ToList();
@@ -110,17 +110,16 @@ namespace OrderResults.Controllers
                     if (model.scoring == null)
                     {
                         //model.scoring = "Default";
-                        model.scoring = "Default";                        
+                        model.scoring = "Default";
                     }
                     page = 0;
                 }
 
-                List<string> lstHighlitedFeilds = new List<string>();
-                lstHighlitedFeilds.Add("Text");
                 // Setup the search parameters.
                 var options = new SearchOptions
                 {
-                    Filter = "(entities/any(x: search.in(x,'ADA|Anthem', '|')))",
+                    //Sagar
+                    //Filter = "(entities/any(x: search.in(x,'ADA|Anthem', '|')))",
                     SearchMode = SearchMode.All,
 
                     // Skip past results that have already been returned.
@@ -131,10 +130,9 @@ namespace OrderResults.Controllers
 
                     // Include the total number of results.
                     IncludeTotalCount = true,
-                   // HighlightFields = lstHighlitedFeilds,
-                   //HighlightPreTag = "<mark>",
-                   
-                   //HighlightPostTag = "</mark>"
+                    // HighlightFields = lstHighlitedFeilds,
+                    //HighlightPreTag = "<mark>",
+                    //HighlightPostTag = "</mark>"
                 };
                 // Select the data properties to be returned.
                 //options.Select.Add("HotelName");
@@ -144,7 +142,7 @@ namespace OrderResults.Controllers
                 //options.Select.Add("Rating");
                 //options.Select.Add("LastRenovationDate");
                 options.Select.Add("fileName");
-                options.Select.Add("metadata");                
+                options.Select.Add("metadata");
                 options.Select.Add("text");
                 options.Select.Add("entities");
                 options.Select.Add("hocrPages");
@@ -153,9 +151,21 @@ namespace OrderResults.Controllers
                 //options.Select.Add("pageImageUrl");
                 options.Select.Add("demoBoost");
                 options.Select.Add("demoInitialPage");
+                options.SearchFields.Add("hocrPages");
+                options.SearchFields.Add("text");
                 options.HighlightFields.Add("text");
 
+
                 List<string> parameters = new List<string>();
+                for (int a = 0; a < model.facetOn.Length; a++)
+                {
+                    if (model.facetOn[a])
+                    {
+                        parameters.Add(model.facetText[a]);
+
+                    }
+                }
+                model.paramFilter = parameters;
                 // Set the ordering based on the user's radio button selection.
                 switch (model.scoring)
                 {
@@ -170,13 +180,7 @@ namespace OrderResults.Controllers
                             options.ScoringProfile = model.scoring;
 
                             // Create a string list of amenities that have been clicked.
-                            for (int a = 0; a < model.facetOn.Length; a++)
-                            {
-                                if (model.facetOn[a])
-                                {
-                                    parameters.Add(model.facetText[a]);
-                                }
-                            }
+
 
                             if (parameters.Count > 0)
                             {
@@ -202,7 +206,7 @@ namespace OrderResults.Controllers
                 //model.resultList = await _searchClient.SearchAsync<Hotel>(model.searchText, options);
 
                 //Sagar
-                model.resultList = await _searchClient.SearchAsync<MemberHandbook>(model.searchText, options);
+                model.resultList = await _searchClient.SearchAsync<HocrDocument>(model.searchText, options);
 
 
                 // Ensure TempData is stored for the next call.
@@ -236,7 +240,7 @@ namespace OrderResults.Controllers
                 //
                 //}
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return View("Error", new ErrorViewModel { RequestId = "1" });
             }
@@ -267,13 +271,13 @@ namespace OrderResults.Controllers
                 //string amenities = string.Join(", ", result.Document.Tags);
                 //string fullDescription = result.Document.Description;
                 //fullDescription += $"\nAmenities: {amenities}";
-                
+
                 // Add strings to the list.
                 nextHotels.Add(result.Document.FileName);
                 nextHotels.Add(PageNumber);
                 nextHotels.Add(pageImageUrl);
                 nextHotels.Add(highlitedText);
-                  //nextHotels.Add(fullDescription);
+                //nextHotels.Add(fullDescription);
             }
 
             // Rather than return a view, return the list of data.
@@ -336,7 +340,7 @@ namespace OrderResults.Controllers
                 model.searchText = TempData["searchfor"].ToString();
 
                 // Initiate a new search.
-                await RunQueryAsync(model, 0, 0,  ameFilter).ConfigureAwait(false);
+                await RunQueryAsync(model, 0, 0, ameFilter).ConfigureAwait(false);
             }
             catch
             {
@@ -346,7 +350,7 @@ namespace OrderResults.Controllers
             return View("Index", model);
         }
 
-        private async Task<ActionResult> RunQueryAsync(SearchData model, int page, int leftMostPage,  string entityFilter)
+        private async Task<ActionResult> RunQueryAsync(SearchData model, int page, int leftMostPage, string entityFilter)
         {
             InitSearch();
 
@@ -399,7 +403,7 @@ namespace OrderResults.Controllers
 
 
             // For efficiency, the search call should be asynchronous, so use SearchAsync rather than Search.
-            model.resultList = await _searchClient.SearchAsync<MemberHandbook>(model.searchText, options).ConfigureAwait(false);
+            model.resultList = await _searchClient.SearchAsync<HocrDocument>(model.searchText, options).ConfigureAwait(false);
 
             // This variable communicates the total number of pages to the view.
             model.pageCount = ((int)model.resultList.TotalCount + GlobalVariables.ResultsPerPage - 1) / GlobalVariables.ResultsPerPage;

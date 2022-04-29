@@ -1,7 +1,7 @@
-using System.Text.Json.Serialization; 
-using System.Collections.Generic; 
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 namespace OrderResults.Models.MemberHandBook
-{ 
+{
 
     public class Root
     {
@@ -12,7 +12,7 @@ namespace OrderResults.Models.MemberHandBook
         public int OdataCount { get; set; }
 
         [JsonPropertyName("value")]
-        public List<MemberHandbook> Value { get; set; }
+        public List<HocrDocument> Value { get; set; }
     }
 
 }

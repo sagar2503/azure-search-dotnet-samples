@@ -61,9 +61,9 @@ namespace OrderResults.Models
         // The list of results.
         //public SearchResults<Hotel> resultList;
         //Sagar : Use typeof("classname") in T
-        public SearchResults<MemberHandbook> resultList;
+        public SearchResults<HocrDocument> resultList;
 
-       
+
         // The current page being displayed.
         public int currentPage { get; set; }
 
@@ -76,10 +76,14 @@ namespace OrderResults.Models
         // The number of page numbers to display - which can be less than MaxPageRange towards the end of the results.
         public int pageRange { get; set; }
 
-        
+
         // Property, and text of a facet (such as "Budget"). Used to communicate this text to the controller.
         public string categoryFilter { get; set; }
         public string entityFilter { get; set; }
-        public string scoring { get; set; }       
+        public string scoring { get; set; }
+        public List<string> paramFilter { get; set; }
+
+
+
     }
 }

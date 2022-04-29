@@ -1,6 +1,7 @@
-using System.Text.Json.Serialization; 
-using System.Collections.Generic; 
-namespace OrderResults.Models.FormRecognizer{ 
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
+namespace OrderResults.Models.FormRecognizer
+{
 
     public class Line
     {

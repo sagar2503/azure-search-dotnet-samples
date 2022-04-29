@@ -1,15 +1,10 @@
 ﻿using Azure.Search.Documents.Indexes;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 
 namespace OrderResults.Models.MemberHandBook
 {
-    public class MemberHandbook
+    public class HocrDocument
     {
         [JsonPropertyName("@search.score")]
         public double SearchScore { get; set; }
@@ -48,8 +43,8 @@ namespace OrderResults.Models.MemberHandBook
         [SearchableField()]
         [JsonPropertyName("text")]
         public string Text { get; set; }
-        
-        [SearchableField(IsFacetable =true)]
+
+        [SearchableField(IsFacetable = true)]
         [JsonPropertyName("entities")]
         public List<string> Entities { get; set; }
 
@@ -67,8 +62,7 @@ namespace OrderResults.Models.MemberHandBook
             List<HocrPages> hp = new List<HocrPages>();
             foreach (string p in HocrPagesString)
             {
-
-                HocrPages hpages =                 Newtonsoft.Json.JsonConvert.DeserializeObject<HocrPages>(p);
+                HocrPages hpages = Newtonsoft.Json.JsonConvert.DeserializeObject<HocrPages>(p);
                 hp.Add(hpages);
             }
             return hp;

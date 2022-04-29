@@ -1,7 +1,8 @@
-using System.Text.Json.Serialization; 
-using System.Collections.Generic; 
-using System; 
-namespace Hotels{ 
+using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
+namespace Hotels
+{
 
     public class Value
     {

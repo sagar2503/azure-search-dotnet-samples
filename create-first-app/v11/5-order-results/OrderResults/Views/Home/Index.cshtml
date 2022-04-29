@@ -81,24 +81,36 @@
                         @Html.Label($"FileName{i}", result[i].Document.FileName, new { @class = "box1" })
                         <br />
                         //@Html.Label($"HighlitedText{i}", result[i].Document.SearchHighlights.ToString(), new { @class = "box1" })
-                        @result[i].Document.SearchHighlights.ToString();
+                        @result[i].Document.SearchHighlights?.ToString();
                         
                         <br />
                         //@Html.Label($"FileName{i}", result[i].Document.Text)
                         foreach (OrderResults.Models.MemberHandBook.HocrPages p in result[i].Document.HocrPagesObject)
                         {
-                            <br />
-                            @Html.Label($"PageNumber", p.PageNumber.ToString(), new { @class = "box2" })
-                            <br />
-                            @Html.Label($"Text", p.Text, new { @class = "box3" })
-                            <br />
-                            <img src=@p.PageImageUrl
-                                 class="rounded-circle"
-                                 height="200" width="200" />
-                            <br />
+                            bool allFilterAvailable = true;
+                            if (Model.paramFilter.Count > 0)
+                            {
+                                foreach (string filterparam in Model.paramFilter)
+                                {
+                                    if (!p.Text.ToLower().Contains(filterparam.ToLower()))
+                                        allFilterAvailable = false;                                   
+                                }
+                            }
+                            if (allFilterAvailable && p.Text.ToLower().Contains(Model.searchText.ToLower()))
+                            {
+                                <br />
+                                @Html.Label($"PageNumber", p.PageNumber.ToString(), new { @class = "box2" })
+                                <br />
+                                @Html.Label($"Text", p.Text, new { @class = "box3" })
+                                <br />
+                                <img src=@p.PageImageUrl
+                                     class="rounded-circle"
+                                     height="200" width="200" />
+                                <br />
+                            }
                         }
 
-                        
+
                     }
 
                 </div>

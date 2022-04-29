@@ -1,5 +1,6 @@
-using System.Text.Json.Serialization; 
-namespace Hotels{ 
+using System.Text.Json.Serialization;
+namespace Hotels
+{
 
     public class Crs
     {

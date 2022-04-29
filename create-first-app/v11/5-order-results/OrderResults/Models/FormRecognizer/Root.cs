@@ -1,5 +1,6 @@
-using System.Text.Json.Serialization; 
-namespace OrderResults.Models.FormRecognizer{ 
+using System.Text.Json.Serialization;
+namespace OrderResults.Models.FormRecognizer
+{
 
     public class Root
     {
