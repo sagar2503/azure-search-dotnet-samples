@@ -1,5 +1,4 @@
 ﻿using Azure.Search.Documents.Models;
-using OrderResults.Models.MemberHandBook;
 using System.Collections.Generic;
 
 namespace OrderResults.Models
@@ -28,11 +27,11 @@ namespace OrderResults.Models
                 return 2;
             }
         }
-        public static string facetName ;
-        public static string facetCountConfig ;
-        public static string selectFields ;
-        public static string searchFields ;
-        public static string highlightFields ;
+        public static string facetName;
+        public static string facetCountConfig;
+        public static string selectFields;
+        public static string searchFields;
+        public static string highlightFields;
     }
     public class SearchData
     {
@@ -66,7 +65,7 @@ namespace OrderResults.Models
         // The list of results.
         //public SearchResults<Hotel> resultList;
         //Sagar : Use typeof("classname") in T
-        public SearchResults<HocrDocument> resultList;
+        public SearchResults<HocrDocument.HocrDocument> resultList;
 
 
         // The current page being displayed.

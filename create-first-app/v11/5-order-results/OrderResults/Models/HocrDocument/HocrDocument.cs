@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace OrderResults.Models.MemberHandBook
+namespace OrderResults.Models.HocrDocument
 {
     public class HocrDocument
     {

@@ -80,12 +80,13 @@
                         <br />
                         @Html.Label($"FileName{i}", result[i].Document.FileName, new { @class = "box1" })
                         <br />
+                        @Html.Raw(@result[i].Document.SearchHighlights?.ToString());
                         //@Html.Label($"HighlitedText{i}", result[i].Document.SearchHighlights.ToString(), new { @class = "box1" })
-                        @result[i].Document.SearchHighlights?.ToString();
+                        
                         
                         <br />
                         //@Html.Label($"FileName{i}", result[i].Document.Text)
-                        foreach (OrderResults.Models.MemberHandBook.HocrPages p in result[i].Document.HocrPagesObject)
+                        foreach (OrderResults.Models.HocrDocument.HocrPages p in result[i].Document.HocrPagesObject)
                         {
                             bool allFilterAvailable = true;
                             if (Model.paramFilter.Count > 0)

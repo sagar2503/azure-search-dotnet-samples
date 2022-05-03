@@ -5,7 +5,7 @@ using Azure.Search.Documents.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using OrderResults.Models;
-using OrderResults.Models.MemberHandBook;
+using OrderResults.Models.HocrDocument;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
